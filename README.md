@@ -42,16 +42,16 @@
 
 ```bash
 # Docker イメージのビルド
-docker compose build
+docker-compose build
 
 # Docker コンテナの起動
-docker compose up -d
+docker-compose up -d
 
 # Docker コンテナ内でコマンドを実行する
-docker compose exec app php -v
+docker-compose exec app php -v
 
 # Docker コンテナの停止・削除
-docker compose down
+docker-compose down
 ```
 
 ### 操作説明
@@ -59,7 +59,7 @@ docker compose down
 以下のフローのように、コンソール（ターミナル）上で動作します。
 
 ```bash
-docker compose exec app php Main.php
+docker-compose exec app blackjack
 ```
 
 - ゲームの設定（プレイヤー人数の設定）をする

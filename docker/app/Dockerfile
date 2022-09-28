@@ -1,19 +1,24 @@
-FROM php:8-apache
-
-WORKDIR /var/www/html
-
+FROM php:8-fpm
 # PHP で必要なライブラリをインストール
 RUN apt-get update \
     && apt-get install -y libonig-dev libzip-dev unzip \
     && docker-php-ext-install mbstring zip bcmath \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug
-
-# composer のインストール
+RUN rm -fr /var/lib/apt/lists/*
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# ファイルのコピー
-COPY ./src /var/www/html
-COPY ./docker/app/php.ini /usr/local/etc/php/php.ini
-COPY ./docker/app/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+# 環境設定
+RUN touch /var/log/xdebug.log && chown nobody. /var/log/xdebug.log
+WORKDIR /var/www/html
+USER nobody
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/www/html
+COPY --chown=nobody:nogroup docker/app/php.ini /usr/local/etc/php/php.ini
+COPY --chown=nobody:nogroup docker/app/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+# composer パッケージのインストール
+COPY --chown=nobody:nogroup src/composer.json .
+RUN composer install
+
+# app のインストール
+COPY --chown=nobody:nogroup src .
