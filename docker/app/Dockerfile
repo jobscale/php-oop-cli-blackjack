@@ -9,10 +9,11 @@ RUN rm -fr /var/lib/apt/lists/*
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # 環境設定
+RUN echo "umask u=rxw,g=rx,o=" >> /etc/bash.bashrc
 RUN touch /var/log/xdebug.log && chown nobody. /var/log/xdebug.log
 WORKDIR /var/www/html
 USER nobody
-ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/www/html
+ENV PATH $PATH:/var/www/html
 COPY --chown=nobody:nogroup docker/app/php.ini /usr/local/etc/php/php.ini
 COPY --chown=nobody:nogroup docker/app/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
