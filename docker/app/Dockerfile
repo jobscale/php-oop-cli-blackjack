@@ -1,5 +1,6 @@
 FROM php:8-fpm
 # PHP で必要なライブラリをインストール
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
     && apt-get install -y libonig-dev libzip-dev unzip \
     && docker-php-ext-install mbstring zip bcmath \
